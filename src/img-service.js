@@ -1,3 +1,5 @@
+const axios = require('axios').default;
+
 const URL = 'https://pixabay.com/api/';
 const KEY = '31465723-59c9170543570d8286da770f4';
 
@@ -7,39 +9,19 @@ export default class ImgApiService {
     this.page = 1;
   }
 
-  async fetchArticles() {
-    return fetch(
+  async fetchArticlesHits() {
+    const response = await axios.get(
       `${URL}?key=${KEY}&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${this.page}`
-    )
-      .then(response => response.json())
-      .then(data => {
-        this.increamentPage();
-        return data.hits;
-      });
-    // const response = await fetch(
-    //   `${URL}?key=${KEY}&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${this.page}`
-    // )
-    // const articles = await response.json()
-    // return articles
+    );
+    this.increamentPage();
+    return response.data.hits;
   }
 
-  // giveArticlesHits() {
-  //   this.fetchArticles().then(data => {
-  //     this.increamentPage();
-  //     console.log(data.hits)
-  //       return data.hits;
-  //     });
-  // }
-
- fetchArticlesWithTotalHits() {
-    return fetch(
+  async fetchArticlesWithTotalHits() {
+    const response = await axios.get(
       `${URL}?key=${KEY}&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${this.page}`
-    )
-      .then(response => response.json())
-      .then(data => {
-
-        return data.totalHits;
-      })
+    );
+    return response.data.totalHits;
   }
 
   resetPage() {

@@ -1,6 +1,5 @@
 import ImgApiService from './img-service';
 import Notiflix from 'notiflix';
-const axios = require('axios').default;
 
 const refs = {
   form: document.querySelector('#search-form'),
@@ -14,13 +13,14 @@ refs.loadMoreBtn.addEventListener('click', onLoad);
 const imgApiService = new ImgApiService();
 
 function onSearch(event) {
-    event.preventDefault();
+  event.preventDefault();
   imgApiService.resetPage();
-    imgApiService.query = event.target.elements.searchQuery.value.trim();
-    if (imgApiService.query === "") {
-        return
-    }
-  imgApiService.fetchArticles().then(hits => {
+  imgApiService.query = event.target.elements.searchQuery.value.trim();
+  if (imgApiService.query === '') {
+    return;
+  }
+
+  imgApiService.fetchArticlesHits().then(hits => {
     clearBox();
     appendHitsMarkup(hits);
   });
@@ -30,8 +30,8 @@ function onSearch(event) {
 }
 
 function onLoad() {
-  imgApiService.fetchArticles().then(appendHitsMarkup);
-  imgApiService.fetchArticles().then(stopLoadingMore);
+  imgApiService.fetchArticlesHits().then(appendHitsMarkup);
+  imgApiService.fetchArticlesHits().then(stopLoadingMore);
 }
 
 function appendHitsMarkup(hits) {
@@ -76,14 +76,18 @@ function clearBox() {
 function stopLoadingMore(hits) {
   if (hits.length < 40) {
     refs.loadMoreBtn.disabled = true;
-    Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
+    Notiflix.Notify.info(
+      "We're sorry, but you've reached the end of search results."
+    );
   }
 }
 
 function requestResultNotification(totalHits) {
   if (totalHits === 0) {
-      Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
+    Notiflix.Notify.failure(
+      'Sorry, there are no images matching your search query. Please try again.'
+    );
   } else {
-      Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`)
+    Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
   }
 }
